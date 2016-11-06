@@ -1,7 +1,6 @@
 /*
  * http://hackerslab.eu/blog/2016/11/%EC%97%B0%EB%AA%BB%EC%97%90-%EB%8F%8C-%EB%8D%98%EC%A7%80%EA%B8%B0/
  */
-
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
