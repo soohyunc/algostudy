@@ -11,7 +11,7 @@
 
 #define nMax	16
 #define mMax	4
-#define MAX		1000
+#define MAX	1000
 
 typedef struct __f {
 	int X;
@@ -38,7 +38,7 @@ void __init__() {
 	for (int i = 0; i < nMax; i++) {
 		flower[i].X = flower[i].Y = flower[i].E = 0;
 	}
-	for (int i = 0; i < nMax; i++) {
+	for (int i = 0; i < mMax; i++) {
 		stone[i].X = stone[i].Y = 0;
 	}
 }
@@ -126,7 +126,7 @@ int main(void)
 {
 	int test_case;
 	int T;
-	freopen("sample_input.txt", "r", stdin);
+	//freopen("sample_input.txt", "r", stdin);
 	setbuf(stdout, NULL);
 
 	scanf("%d", &T);
