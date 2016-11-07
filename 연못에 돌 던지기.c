@@ -1,6 +1,6 @@
 /*
- * http://hackerslab.eu/blog/2016/11/%EC%97%B0%EB%AA%BB%EC%97%90-%EB%8F%8C-%EB%8D%98%EC%A7%80%EA%B8%B0/
- */
+* http://hackerslab.eu/blog/2016/11/%EC%97%B0%EB%AA%BB%EC%97%90-%EB%8F%8C-%EB%8D%98%EC%A7%80%EA%B8%B0/
+*/
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
@@ -14,6 +14,7 @@
 #define MAX	1000
 
 typedef struct __f {
+	int Id;
 	int X;
 	int Y;
 	int E;
@@ -31,12 +32,14 @@ Stone	stone[mMax];
 int N, M;
 int P, R;
 int numSink;
+int E[nMax];
 
 void __init__() {
 	N = M = P = R = 0;
 	numSink = 0;
 	for (int i = 0; i < nMax; i++) {
-		flower[i].X = flower[i].Y = flower[i].E = 0;
+		E[i] = 0;
+		flower[i].Id = flower[i].X = flower[i].Y = flower[i].E = 0;
 	}
 	for (int i = 0; i < mMax; i++) {
 		stone[i].X = stone[i].Y = 0;
@@ -45,17 +48,13 @@ void __init__() {
 
 void _restore() {
 	for (int i = 0; i < N; i++) {
-		flower[i].X = copy[i].X;
-		flower[i].Y = copy[i].Y;
-		flower[i].E = copy[i].E;
+		flower[flower[i].Id].E = E[flower[i].Id];
 	}
 }
 
 void _copy() {
 	for (int i = 0; i < N; i++) {
-		copy[i].X = flower[i].X;
-		copy[i].Y = flower[i].Y;
-		copy[i].E = flower[i].E;
+		E[i] = flower[i].E;
 	}
 }
 
@@ -100,16 +99,16 @@ void calculate(int count) {
 				count++;
 		}
 	} //printf("\n");
-	//printf("count = %d\n", count);
+	  //printf("count = %d\n", count);
 
 	if (count > numSink)
 		numSink = count;
 }
 
-void perm(int n, int r) {
+void repeated_perm(int n, int r) {
 	if (r == 0) {
 		calculate(0);
-		//_restore();
+		_restore();
 		return;
 	}
 
@@ -117,7 +116,7 @@ void perm(int n, int r) {
 		swap(i, n - 1);
 		stone[r - 1].X = flower[n - 1].X;
 		stone[r - 1].Y = flower[n - 1].Y;
-		perm(n - 1, r - 1);
+		repeated_perm(n, r - 1);
 		swap(i, n - 1);
 	}
 }
@@ -126,7 +125,7 @@ int main(void)
 {
 	int test_case;
 	int T;
-	//freopen("sample_input.txt", "r", stdin);
+	freopen("sample_input.txt", "r", stdin);
 	setbuf(stdout, NULL);
 
 	scanf("%d", &T);
@@ -136,13 +135,14 @@ int main(void)
 		scanf("%d", &N);
 		//printf("%d\n", N);
 		for (int i = 0; i < N; i++) {
+			flower[i].Id = i;
 			scanf("%d %d %d", &flower[i].X, &flower[i].Y, &flower[i].E);
 		}
-		//_copy();
+		_copy();
 		scanf("%d %d %d", &M, &P, &R);
 		//printf("%d\n", M);
 
-		perm(N, M);
+		repeated_perm(N, M);
 		printf("#%d %d\n", test_case, N - numSink);
 	}
 	return 0;
