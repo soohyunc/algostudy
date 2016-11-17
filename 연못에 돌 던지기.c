@@ -1,6 +1,6 @@
 /*
-* http://hackerslab.eu/blog/2016/11/%EC%97%B0%EB%AA%BB%EC%97%90-%EB%8F%8C-%EB%8D%98%EC%A7%80%EA%B8%B0/
-*/
+ * http://hackerslab.eu/blog/2016/11/%EC%97%B0%EB%AA%BB%EC%97%90-%EB%8F%8C-%EB%8D%98%EC%A7%80%EA%B8%B0/
+ */
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
@@ -76,27 +76,32 @@ void swap(int a, int b) {
 	flower[b].E = e;
 }
 
+int isInvalid(int n) {
+	int invalid = false;
+
+	for (int j = 0; j < N; j++) {
+		if (stone[n].X == flower[j].X && stone[n].Y == flower[j].Y) {
+			if (flower[j].E <= 0)
+				invalid = true;
+		}
+	}
+
+	return invalid;
+}
+
 void calculate(int count) {
 	for (int i = 0; i < M; i++) {
 		//printf("%d %d ", stone[i].X, stone[i].Y);
 
-		int invalid = false;
-		for (int j = 0; j < N; j++) {
-			if (stone[i].X == flower[j].X && stone[i].Y == flower[j].Y) {
+		if (!isInvalid(i)) {
+			for (int j = 0; j < N; j++) {
+				if (_dist(stone[i], flower[j]) <= R && flower[j].E > 0) {
+					flower[j].E -= P;
+				}
+
 				if (flower[j].E <= 0)
-					invalid = true;
+					count++;
 			}
-		}
-
-		if (invalid) continue;
-
-		for (int j = 0; j < N; j++) {
-			if (_dist(stone[i], flower[j]) <= R && flower[j].E > 0) {
-				flower[j].E -= P;
-			}
-
-			if (flower[j].E <= 0)
-				count++;
 		}
 	} //printf("\n");
 	  //printf("count = %d\n", count);
