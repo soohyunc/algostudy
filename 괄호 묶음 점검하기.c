@@ -1,3 +1,7 @@
+/*
+ * http://hackerslab.eu/blog/2016/11/괄호-묶음-점검하기/
+ */
+
 #include<stdio.h>
 #include<stdlib.h>
 
