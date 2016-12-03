@@ -11,7 +11,7 @@
 
 #define nMax	16
 #define mMax	4
-#define MAX	1000
+#define MAX	    1000
 
 typedef struct __f {
 	int Id;
@@ -26,13 +26,13 @@ typedef struct __s {
 	int E;
 } Stone;
 
-Flower	flower[nMax], copy[nMax];
+Flower	flower[nMax];
 Stone	stone[mMax];
 
 int N, M;
 int P, R;
 int numSink;
-int E[nMax];
+int E[nMax];  // array for flower's energy
 
 void __init__() {
 	N = M = P = R = 0;
@@ -46,23 +46,23 @@ void __init__() {
 	}
 }
 
-void _restore() {
+void restore() {
 	for (int i = 0; i < N; i++) {
 		flower[flower[i].Id].E = E[flower[i].Id];
 	}
 }
 
-void _copy() {
+void copy() {
 	for (int i = 0; i < N; i++) {
 		E[i] = flower[i].E;
 	}
 }
 
-int _dist(Stone A, Flower B) {
+inline int _dist(Stone A, Flower B) {
 	return _abs(A.X - B.X) + _abs(A.Y - B.Y);
 }
 
-void swap(int a, int b) {
+void swap_flower(int a, int b) {
 	int x = flower[a].X;
 	int y = flower[a].Y;
 	int e = flower[a].E;
@@ -77,22 +77,19 @@ void swap(int a, int b) {
 }
 
 int isInvalid(int n) {
-	int invalid = false;
-
-	for (int j = 0; j < N; j++) {
-		if (stone[n].X == flower[j].X && stone[n].Y == flower[j].Y) {
-			if (flower[j].E <= 0)
-				invalid = true;
+	for (int i = 0; i < N; i++) {
+		if (stone[n].X == flower[i].X && stone[n].Y == flower[i].Y) {
+			if (flower[i].E <= 0)
+				return true;
 		}
 	}
 
-	return invalid;
+	return false;
 }
 
 void calculate(int count) {
 	for (int i = 0; i < M; i++) {
 		//printf("%d %d ", stone[i].X, stone[i].Y);
-
 		if (!isInvalid(i)) {
 			for (int j = 0; j < N; j++) {
 				if (_dist(stone[i], flower[j]) <= R && flower[j].E > 0) {
@@ -104,7 +101,7 @@ void calculate(int count) {
 			}
 		}
 	} //printf("\n");
-	  //printf("count = %d\n", count);
+	//printf("count = %d\n", count);
 
 	if (count > numSink)
 		numSink = count;
@@ -113,16 +110,20 @@ void calculate(int count) {
 void repeated_perm(int n, int r) {
 	if (r == 0) {
 		calculate(0);
-		_restore();
+		restore();
 		return;
 	}
 
 	for (int i = 0; i < n; i++) {
-		swap(i, n - 1);
+		// swap
+		swap_flower(i, n - 1);
+		// copy X & Y
 		stone[r - 1].X = flower[n - 1].X;
 		stone[r - 1].Y = flower[n - 1].Y;
+		// permutation
 		repeated_perm(n, r - 1);
-		swap(i, n - 1);
+		// swap again
+		swap_flower(i, n - 1);
 	}
 }
 
@@ -140,13 +141,17 @@ int main(void)
 		scanf("%d", &N);
 		//printf("%d\n", N);
 		for (int i = 0; i < N; i++) {
+			// assign Id per each flower
 			flower[i].Id = i;
+			// X, Y, and E
 			scanf("%d %d %d", &flower[i].X, &flower[i].Y, &flower[i].E);
 		}
-		_copy();
+		copy();
 		scanf("%d %d %d", &M, &P, &R);
 		//printf("%d\n", M);
 
+
+		// Repeated Permutation
 		repeated_perm(N, M);
 		printf("#%d %d\n", test_case, N - numSink);
 	}
